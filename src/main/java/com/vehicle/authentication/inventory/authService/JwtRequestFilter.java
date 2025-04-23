@@ -30,8 +30,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         final String authorizationHeader = request.getHeader("Authorization");
 
+        final String requestPath = request.getRequestURI();
+
         String username = null;
         String jwt = null;
+
+        // Skip authentication for logout endpoint
+        if ("/auth/logout".equals(requestPath)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);

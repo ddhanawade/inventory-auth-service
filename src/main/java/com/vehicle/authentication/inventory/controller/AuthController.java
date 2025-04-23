@@ -18,6 +18,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/auth")
+//@CrossOrigin(origins = "http://fleet-manager-client.s3-website.us-east-2.amazonaws.com")
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
@@ -52,7 +53,7 @@ public class AuthController {
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        final String token = jwtUtil.generateToken(userDetails);
+        final String token = jwtUtil.generateToken(String.valueOf(userDetails));
 
         return new LoginResponse(token, "Login successful");
     }
@@ -61,6 +62,9 @@ public class AuthController {
     public String logout(@RequestHeader("Authorization") String token) {
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
+        }
+        if (tokenBlacklist.contains(token)) {
+            throw new RuntimeException("Token is already blacklisted");
         }
         tokenBlacklist.add(token);
         return "Logout successful";
