@@ -13,7 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -130,9 +132,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody User user) {
+    public Map<String, String> registerUser(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "User registered successfully";
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User registered successfully");
+        return response;
     }
+
 }

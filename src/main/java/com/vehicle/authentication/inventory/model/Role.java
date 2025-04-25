@@ -2,5 +2,8 @@ package com.vehicle.authentication.inventory.model;
 
 public enum Role {
     USER,
-    ADMIN
+    ADMIN,
+    TATA,
+    TOYOTA,
+    EICHER
 }
