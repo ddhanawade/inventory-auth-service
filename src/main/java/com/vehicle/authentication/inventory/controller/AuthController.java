@@ -13,10 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -133,12 +130,27 @@ public class AuthController {
 
     @PostMapping("/register")
     public Map<String, String> registerUser(@RequestBody User user) {
+        // Validate input
+        if ((user.getUsername()).isEmpty() || (user.getPassword()).isEmpty()) {
+            return Map.of("message", "Username and password cannot be null");
+        }
+
+        // Fetch users by username or email
+        List<User> existingUsers = userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail());
+
+        for (User foundUser : existingUsers) {
+            if (foundUser.getUsername().equals(user.getUsername())) {
+                return Map.of("message", "User already exists");
+            }
+            if (foundUser.getEmail().equals(user.getEmail())) {
+                return Map.of("message", "Email already exists");
+            }
+        }
+
+        // Encode the password and save the user
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "User registered successfully");
-        return response;
+        return Map.of("message", "User registered successfully");
     }
-
 }
