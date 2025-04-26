@@ -153,4 +153,12 @@ public class AuthController {
 
         return Map.of("message", "User registered successfully");
     }
+
+    // Get User By Username
+
+    @GetMapping("/{username}")
+    public User getUserByUsername(@PathVariable String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+    }
 }
