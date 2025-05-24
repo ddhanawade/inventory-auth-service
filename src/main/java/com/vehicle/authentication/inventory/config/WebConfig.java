@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://fleet-manager-client.s3-website.us-east-2.amazonaws.com") // Frontend origin
+                .allowedOrigins("http://inventory-management-client.s3-website.us-east-2.amazonaws.com") // Frontend origin
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
