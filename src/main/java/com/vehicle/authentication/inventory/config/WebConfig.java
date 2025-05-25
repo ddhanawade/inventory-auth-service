@@ -11,6 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://inventory-management-client.s3-website.us-east-2.amazonaws.com") // Frontend origin
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedOrigins("http://localhost:4200")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
