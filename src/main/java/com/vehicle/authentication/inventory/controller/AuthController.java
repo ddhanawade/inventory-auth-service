@@ -3,6 +3,7 @@ package com.vehicle.authentication.inventory.controller;
 import com.vehicle.authentication.inventory.authService.JwtUtil;
 import com.vehicle.authentication.inventory.model.User;
 import com.vehicle.authentication.inventory.repository.UserRepository;
+import com.vehicle.authentication.inventory.service.EmailService;
 import com.vehicle.authentication.inventory.service.UserDetailsServiceImpl;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
@@ -161,4 +165,61 @@ public class AuthController {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
     }
+
+    @PostMapping("/forget-password")
+    public Map<String, String> forgetPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            return Map.of("message", "Email not found");
+        }
+        // Generate a reset token
+        String resetToken = UUID.randomUUID().toString();
+        // Save the reset token in the database (or a separate field)
+        User user = userOptional.get();
+        user.setResetToken(resetToken); // Add a resetToken field in the User entity
+        user.setTokenExpiry(new Date(System.currentTimeMillis() + 15 * 60 * 1000)); // 15 minutes expiry
+        userRepository.save(user);
+        // Send the reset token to the user's email
+        String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
+        emailService.sendEmail(email, "Password Reset Request", "Click the link to reset your password: " + resetLink);
+
+        return Map.of("message", "Password reset link sent to your email");
+    }
+
+    @PostMapping("/reset-password")
+    public Map<String, String> resetPassword(@RequestBody Map<String, String> request) {
+        String resetToken = request.get("token");
+        String newPassword = request.get("newPassword");
+
+        // Validate input
+        if (resetToken == null || resetToken.isEmpty() || newPassword == null || newPassword.isEmpty()) {
+            return Map.of("message", "Token and new password cannot be null or empty");
+        }
+
+        // Find user by reset token
+        Optional<User> userOptional = userRepository.findByResetToken(resetToken);
+
+        if (userOptional.isEmpty()) {
+            return Map.of("message", "Invalid or expired reset token");
+        }
+
+        User user = userOptional.get();
+
+        // Check if the token is expired
+        if (user.getTokenExpiry() == null || user.getTokenExpiry().before(new Date())) {
+            return Map.of("message", "Reset token has expired");
+        }
+
+        // Update the password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetToken(null); // Clear the reset token
+        user.setTokenExpiry(null); // Clear the expiry
+        userRepository.save(user);
+
+        return Map.of("message", "Password reset successful");
+    }
+
+
 }

@@ -50,7 +50,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                     return corsConfig;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login", "/auth/logout", "/auth/logout", "/auth/{username}").permitAll()
+                        .requestMatchers("/auth/register", "/auth/login", "/auth/logout", "/auth/logout", "/auth/{username}", "/auth/forget-password", "/auth/reset-password").permitAll()
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/auth/logout") // Define logout URL
