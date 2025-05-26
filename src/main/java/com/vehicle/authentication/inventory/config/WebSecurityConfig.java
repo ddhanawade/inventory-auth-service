@@ -43,14 +43,15 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfig.setAllowedOrigins(List.of("http://localhost:4200", "http://fleet-manager-client.s3-website.us-east-2.amazonaws.com")); // Allow specific origin
+                    corsConfig.setAllowedOrigins(List.of("http://localhost:4200", "http://inventory-management-client.s3-website.us-east-2.amazonaws.com")); // Allow specific origin
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     corsConfig.setAllowCredentials(true);
                     return corsConfig;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login", "/auth/logout", "/auth/logout", "/auth/{username}", "/auth/forget-password", "/auth/reset-password").permitAll()
+                        .requestMatchers("/auth/login", "/auth/register", "/auth/*").permitAll() // Allow /auth/{username}
+                        .requestMatchers("/auth/**").authenticated()
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/auth/logout") // Define logout URL

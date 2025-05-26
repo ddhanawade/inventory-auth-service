@@ -18,7 +18,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/auth")
-//@CrossOrigin(origins = "http://fleet-manager-client.s3-website.us-east-2.amazonaws.com")
+//@CrossOrigin(origins = "http://inventory-management-client.s3-website.us-east-2.amazonaws.com")
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
