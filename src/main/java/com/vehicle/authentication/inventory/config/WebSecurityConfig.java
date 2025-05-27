@@ -50,7 +50,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                     return corsConfig;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register", "/auth/*").permitAll() // Allow /auth/{username}
+                        .requestMatchers("/auth/login", "/auth/register", "/auth/*","/start-async-task").permitAll() // Allow /auth/{username}
                         .requestMatchers("/auth/**").authenticated()
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
