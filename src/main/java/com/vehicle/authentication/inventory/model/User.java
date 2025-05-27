@@ -3,6 +3,7 @@ package com.vehicle.authentication.inventory.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -18,5 +19,8 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    private String resetToken;
+    private Date tokenExpiry;
 
 }
