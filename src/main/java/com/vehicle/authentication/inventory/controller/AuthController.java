@@ -183,7 +183,17 @@ public class AuthController {
         userRepository.save(user);
         // Send the reset token to the user's email
         String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
-        emailService.sendEmail(email, "Password Reset Request", "Click the link to reset your password: " + resetLink);
+        String subject = "Password Reset Request for Your Fleet Manager Account";
+        String body = "Dear " + user.getUsername() + ",\n\n" +
+                "We received a request to reset the password for your account associated with this email address. " +
+                "If you made this request, please click the link below to reset your password:\n\n" +
+                resetLink + "\n\n" +
+                "This link will expire in 15 minutes. If you did not request a password reset, please ignore this email or contact our support team if you have concerns.\n\n" +
+                "For your security, please do not share this email or the reset link with anyone.\n\n" +
+                "Thank you,\n" +
+                "The Fleet Manager Team\n\n" +
+                "Note: This is an automated email. Please do not reply to this message.";
+        emailService.sendEmail(email, subject, body);
 
         return Map.of("message", "Password reset link sent to your email");
     }
