@@ -21,11 +21,11 @@ import java.util.List;
 public class WebSecurityConfig implements WebMvcConfigurer {
 
     private final JwtRequestFilter jwtRequestFilter;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final CorsProperties corsProperties;
 
-    public WebSecurityConfig(JwtRequestFilter jwtRequestFilter, UserDetailsServiceImpl userDetailsService) {
+    public WebSecurityConfig(JwtRequestFilter jwtRequestFilter, CorsProperties corsProperties) {
         this.jwtRequestFilter = jwtRequestFilter;
-        this.userDetailsService = userDetailsService;
+        this.corsProperties = corsProperties;
     }
 
     @Bean
@@ -40,10 +40,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("corsProperties.getAllowedOrigins() = " + corsProperties.getAllowedOrigins());
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfig.setAllowedOrigins(List.of("http://localhost:4200", "http://inventory-management-client.s3-website.us-east-2.amazonaws.com")); // Allow specific origin
+                    corsConfig.setAllowedOrigins(corsProperties.getAllowedOrigins());
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     corsConfig.setAllowCredentials(true);

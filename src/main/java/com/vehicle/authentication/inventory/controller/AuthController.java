@@ -18,8 +18,8 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/auth")
-//@CrossOrigin(origins = "http://inventory-management-client.s3-website.us-east-2.amazonaws.com")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://vehicle-inventory-client.s3-website.us-east-2.amazonaws.com")
+//@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
     @Autowired
@@ -182,7 +182,7 @@ public class AuthController {
         user.setTokenExpiry(new Date(System.currentTimeMillis() + 15 * 60 * 1000)); // 15 minutes expiry
         userRepository.save(user);
         // Send the reset token to the user's email
-        String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
+        String resetLink = "http://vehicle-inventory-client.s3-website.us-east-2.amazonaws.com/reset-password?token=" + resetToken;
         String subject = "Password Reset Request for Your Fleet Manager Account";
         String body = "Dear " + user.getUsername() + ",\n\n" +
                 "We received a request to reset the password for your account associated with this email address. " +
