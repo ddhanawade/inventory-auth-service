@@ -7,6 +7,7 @@ import com.vehicle.authentication.inventory.service.EmailService;
 import com.vehicle.authentication.inventory.service.UserDetailsServiceImpl;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -40,6 +41,9 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     private final Set<String> tokenBlacklist = new HashSet<>();
+
+    @Value("${app.email.url}")
+    String baseUrl;
 
     public AuthController(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -182,7 +186,7 @@ public class AuthController {
         user.setTokenExpiry(new Date(System.currentTimeMillis() + 15 * 60 * 1000)); // 15 minutes expiry
         userRepository.save(user);
         // Send the reset token to the user's email
-        String resetLink = "http://localhost:4200/#/reset-password?token=" + resetToken;
+        String resetLink = baseUrl+"/#/reset-password?token=" + resetToken;
         String subject = "Password Reset Request for Your Fleet Manager Account";
         String body = "Dear " + user.getUsername() + ",\n\n" +
                 "We received a request to reset the password for your account associated with this email address. " +
