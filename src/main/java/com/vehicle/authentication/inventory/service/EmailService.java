@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
 @Service
 public class EmailService {
 
-    @Autowired
     private JavaMailSender mailSender;
 
     public void sendEmail(String to, String subject, String body) {
