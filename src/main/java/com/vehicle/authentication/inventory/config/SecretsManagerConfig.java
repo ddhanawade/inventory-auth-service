@@ -46,7 +46,7 @@ public class SecretsManagerConfig {
     private AwsSecrets getSecret() {
 
         String secretName = "prd/testsecret";
-        String region = "us-east-2";
+        String region = "ap-south-1";
 
 
         AWSSecretsManager client = AWSSecretsManagerClientBuilder.standard()
