@@ -11,7 +11,11 @@ import org.springframework.util.StringUtils;
 @Service
 public class EmailService {
 
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void sendEmail(String to, String subject, String body) {
         if (!isValidEmail(to)) {
